@@ -92,9 +92,9 @@ function checkAvalibileTeams(dates, checkingDuration, myStartTime) {
                         var scheduledStartTime = dates_1.givenTimeInMinutes(element.time);
                         var scheduledEndTime = scheduledStartTime + element.visitLength;
                         scheduledStartTime -= 15;
-                        return ((checkingStartTime > scheduledStartTime && checkingStartTime < scheduledEndTime) ||
-                            (checkingEndTime > scheduledStartTime && checkingEndTime < scheduledEndTime) ||
-                            (checkingStartTime < scheduledStartTime && checkingEndTime > scheduledEndTime));
+                        return ((checkingStartTime >= scheduledStartTime && checkingStartTime <= scheduledEndTime) ||
+                            (checkingEndTime >= scheduledStartTime && checkingEndTime <= scheduledEndTime) ||
+                            (checkingStartTime <= scheduledStartTime && checkingEndTime >= scheduledEndTime));
                     }).map(function (ele) { return ele._id; })
                         .forEach(function (element) {
                         teams = teams.filter(function (object) { object.id == element; });

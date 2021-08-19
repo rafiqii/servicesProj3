@@ -53,9 +53,9 @@ export async function checkAvalibileTeams(dates:string, checkingDuration:number,
         let scheduledEndTime= scheduledStartTime + element.visitLength;
         scheduledStartTime-=15;
 
-        return ((checkingStartTime>scheduledStartTime && checkingStartTime<scheduledEndTime) ||
-        (checkingEndTime>scheduledStartTime && checkingEndTime<scheduledEndTime)||
-        (checkingStartTime<scheduledStartTime && checkingEndTime>scheduledEndTime))
+        return ((checkingStartTime>=scheduledStartTime && checkingStartTime<=scheduledEndTime) ||
+        (checkingEndTime>=scheduledStartTime && checkingEndTime<=scheduledEndTime)||
+        (checkingStartTime<=scheduledStartTime && checkingEndTime>=scheduledEndTime))
     }).map(ele => ele._id)
     .forEach(element =>{
         teams=teams.filter(object=>{object.id==element})
