@@ -10,13 +10,14 @@ import { Order } from "../models/order";
 const router = express.Router();
 
 router.post("/createOrder", authUser,async (req:Request,res:Response)=>{ 
+    let avalibility= await checkAvalibility(req.body.date,req.body.visitLength,req.body.time,req.body.team)
     if(givenTimeInMinutes(req.body.time)<480 || givenTimeInMinutes(req.body.time)>960)
         throw new Error("reservation should be from 8:00 till 16:00")
     if(req.body.visitLength<60)
         throw new Error("can not have less than 1 hour in a visit")
     if(req.body.visitLength>240)
         throw new Error("can not have more than 4 hours in a single visit")
-    if(!checkAvalibility(req.body.date,req.body.visitLength,req.body.time,req.body.team))
+    if(!avalibility)
     {
         throw new Error("time conflict")
     }
@@ -24,8 +25,12 @@ router.post("/createOrder", authUser,async (req:Request,res:Response)=>{
     order.date = req.body.date;
     order.team = req.body.team;
     order.time = req.body.time;
-    order.visitLength = req.body.time;
+    order.visitLength = parseInt(req.body.visitLength);
     order.status=EStatus.upcoming;
+
+    await order.save()
+
+    res.send("saved")
 });
 
 router.get('/avalibleTechnicians',async (req, res):Promise <Iteam[]>=>{//req body: date, time, visitLength
@@ -35,11 +40,7 @@ router.get('/avalibleTechnicians',async (req, res):Promise <Iteam[]>=>{//req bod
         throw new Error("can not have less than 1 hour in a visit")
     if(req.body.visitLength>240)
         throw new Error("can not have more than 4 hours in a single visit")
-    if(!checkAvalibility(req.body.date,req.body.visitLength,req.body.time,req.body.team))
-    {
-        throw new Error("time conflict")
-    }
-
+    res.send(await checkAvalibileTeams(req.body.date,req.body.visitLength,req.body.time))
     return checkAvalibileTeams(req.body.date, req.body.visitLength, req.body.time);
 
 })

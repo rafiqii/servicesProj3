@@ -42,7 +42,7 @@ var team_1 = require("../models/team");
 var dates_1 = require("./dates");
 function checkAvalibility(dates, checkingDuration, myStartTime, technicianTeam) {
     return __awaiter(this, void 0, void 0, function () {
-        var ordersOfSameTeamAndDate, checkingStartTime, checkingEndTime;
+        var ordersOfSameTeamAndDate, checkingStartTime, checkingEndTime, avaliblity, i, scheduledStartTime, scheduledEndTime;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, order_1.Order.find({ date: dates, team: technicianTeam })];
@@ -50,18 +50,24 @@ function checkAvalibility(dates, checkingDuration, myStartTime, technicianTeam) 
                     ordersOfSameTeamAndDate = _a.sent();
                     checkingStartTime = dates_1.givenTimeInMinutes(myStartTime);
                     checkingEndTime = checkingStartTime + checkingDuration;
+                    avaliblity = true;
                     checkingStartTime -= 15;
-                    ordersOfSameTeamAndDate.forEach(function (element) {
-                        var scheduledStartTime = dates_1.givenTimeInMinutes(element.time);
-                        var scheduledEndTime = scheduledStartTime + element.visitLength;
+                    for (i = 0; i < ordersOfSameTeamAndDate.length; i++) {
+                        scheduledStartTime = dates_1.givenTimeInMinutes(ordersOfSameTeamAndDate[i].time);
+                        scheduledEndTime = scheduledStartTime + ordersOfSameTeamAndDate[i].visitLength;
                         scheduledStartTime -= 15;
-                        if (checkingStartTime > scheduledStartTime && checkingStartTime < scheduledEndTime) // this solves case 2
-                            return false;
-                        if (checkingEndTime > scheduledStartTime && checkingEndTime < scheduledEndTime) // this solves case 1
-                            return false;
-                        if (checkingStartTime < scheduledStartTime && checkingEndTime > scheduledEndTime) //this solves case 3
-                            return false;
-                    });
+                        if (checkingStartTime >= scheduledStartTime && checkingStartTime <= scheduledEndTime) {
+                            return [2 /*return*/, false];
+                        }
+                        // this solves case 2
+                        if (checkingEndTime >= scheduledStartTime && checkingEndTime <= scheduledEndTime) {
+                            return [2 /*return*/, false];
+                        }
+                        // this solves case 1
+                        if (checkingStartTime <= scheduledStartTime && checkingEndTime >= scheduledEndTime) {
+                            return [2 /*return*/, false];
+                        } //this solves case 3
+                    }
                     return [2 /*return*/, true];
             }
         });

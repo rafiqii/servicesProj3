@@ -14,16 +14,16 @@ function authUser(req, res, next) {
     }
     try {
         var env = dotenv_1.default.config({ path: path_1.default.normalize(path_1.default.resolve(__dirname, "../environment/.env")) });
-        var signature = process.env.jwtSignature;
+        var signature = process.env.signature;
         var payload = jsonwebtoken_1.default.verify(token, signature);
         // console.log(payload)
         if (payload == null)
-            return res.status(400).send("invalid token");
+            return res.status(400).send("invald token");
         req.user = payload;
         next();
     }
     catch (error) {
-        return res.status(400).send("invalid token");
+        return res.status(400).send("invalid token " + error);
     }
 }
 exports.authUser = authUser;

@@ -52,22 +52,24 @@ router.post("/createCustomerAccount", function (req, res) { return __awaiter(voi
             case 0: return [4 /*yield*/, user_1.User.findOne({ userName: req.body.userName })];
             case 1:
                 duplicateUserName = _g.sent();
-                if (!duplicateUserName) {
+                console.log(duplicateUserName);
+                if (duplicateUserName) {
                     res.status(400).send("userName is already taken");
                     throw new Error("User is already taken");
                 }
                 _b = (_a = user_1.User).create;
                 _f = { userName: req.body.userName };
                 _d = (_c = bcrypt_1.default).hash;
-                _e = [req.body.password];
+                _e = [req.body.passWord];
                 return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
             case 2: return [4 /*yield*/, _d.apply(_c, _e.concat([_g.sent()]))];
-            case 3: return [4 /*yield*/, _b.apply(_a, [(_f.password = _g.sent(), _f.role = role_1.roles.customer, _f)])];
+            case 3: return [4 /*yield*/, _b.apply(_a, [(_f.passWord = _g.sent(), _f.role = role_1.roles.customer, _f)])];
             case 4:
                 user = _g.sent();
                 return [4 /*yield*/, user.save()];
             case 5:
                 _g.sent();
+                res.send("user saved");
                 return [2 /*return*/, ({ _id: user._id, userName: user.userName })];
         }
     });
@@ -80,22 +82,23 @@ router.post("/createTechnicianAccount", function (req, res) { return __awaiter(v
             case 0: return [4 /*yield*/, user_1.User.findOne({ userName: req.body.userName })];
             case 1:
                 duplicateUserName = _g.sent();
-                if (!duplicateUserName) {
+                if (duplicateUserName) {
                     res.status(400).send("userName is already taken");
                     throw new Error("User is already taken");
                 }
                 _b = (_a = user_1.User).create;
                 _f = { userName: req.body.userName };
                 _d = (_c = bcrypt_1.default).hash;
-                _e = [req.body.password];
+                _e = [req.body.passWord];
                 return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
             case 2: return [4 /*yield*/, _d.apply(_c, _e.concat([_g.sent()]))];
-            case 3: return [4 /*yield*/, _b.apply(_a, [(_f.password = _g.sent(), _f.role = role_1.roles.technician, _f)])];
+            case 3: return [4 /*yield*/, _b.apply(_a, [(_f.passWord = _g.sent(), _f.role = role_1.roles.technician, _f)])];
             case 4:
                 user = _g.sent();
                 return [4 /*yield*/, user.save()];
             case 5:
                 _g.sent();
+                res.send("user saved");
                 return [2 /*return*/, ({ _id: user._id, userName: user.userName })];
         }
     });

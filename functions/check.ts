@@ -7,26 +7,34 @@ import { getHours, getMinutes, givenTimeInMinutes } from "./dates";
 export async function checkAvalibility(dates:string, checkingDuration:number, myStartTime:string, technicianTeam:Iteam):Promise <boolean> 
 {
     const ordersOfSameTeamAndDate= await Order.find({date:dates, team:technicianTeam});
-
+    
     let checkingStartTime:number=givenTimeInMinutes(myStartTime);
     let checkingEndTime:number= checkingStartTime + checkingDuration;
-
+    let avaliblity:boolean=true;
     checkingStartTime-=15;
-    ordersOfSameTeamAndDate.forEach(element => 
+    for(let i=0;i<ordersOfSameTeamAndDate.length;i++)
     {
-        let scheduledStartTime=givenTimeInMinutes(element.time);
-        let scheduledEndTime= scheduledStartTime + element.visitLength;
+        let scheduledStartTime=givenTimeInMinutes(ordersOfSameTeamAndDate[i].time);
+        let scheduledEndTime= scheduledStartTime + ordersOfSameTeamAndDate[i].visitLength;
 
         scheduledStartTime-=15;
 
-        if(checkingStartTime>scheduledStartTime && checkingStartTime<scheduledEndTime) // this solves case 2
+        if(checkingStartTime>=scheduledStartTime && checkingStartTime<=scheduledEndTime)
+        {
             return false;
-        if(checkingEndTime>scheduledStartTime && checkingEndTime<scheduledEndTime)// this solves case 1
+        }
+        // this solves case 2
+        if(checkingEndTime>=scheduledStartTime && checkingEndTime<=scheduledEndTime)
+        {
             return false;
-        if(checkingStartTime<scheduledStartTime && checkingEndTime>scheduledEndTime)//this solves case 3
+        }
+        // this solves case 1
+        if(checkingStartTime<=scheduledStartTime && checkingEndTime>=scheduledEndTime)
+        {
             return false;
+        }//this solves case 3
         
-    });
+    }
     return true;
 }
 

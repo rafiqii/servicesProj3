@@ -40,6 +40,7 @@ router.post("/createTeam", async (req:Request,res: Response):Promise <technician
     technician2: req.body.technician2,
     ordersWorkedOn: []
     });
+    res.send("saved")
     return (team)
 });
 

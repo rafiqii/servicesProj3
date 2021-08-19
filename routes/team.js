@@ -76,6 +76,7 @@ router.post("/createTeam", function (req, res) { return __awaiter(void 0, void 0
                     })];
             case 5:
                 team = _a.sent();
+                res.send("saved");
                 return [2 /*return*/, (team)];
         }
     });

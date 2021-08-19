@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
         res.status(404).send("Username not found");
         return;
     }
-    if(await bcrypt.compare(req.body.password, logingUser.password)){
+    if(await bcrypt.compare(req.body.passWord, logingUser.passWord)){
         res.status(200).setHeader("x-auth",logingUser.generateToken()).send("Logged in");
     }
     else res.status(404).send("Password incorrect");

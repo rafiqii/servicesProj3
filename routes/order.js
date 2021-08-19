@@ -47,38 +47,52 @@ var AuthenticateUser_1 = require("../middleware/AuthenticateUser");
 var order_1 = require("../models/order");
 var router = express_1.default.Router();
 router.post("/createOrder", AuthenticateUser_1.authUser, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var order;
+    var avalibility, order;
     return __generator(this, function (_a) {
-        if (dates_1.givenTimeInMinutes(req.body.time) < 480 || dates_1.givenTimeInMinutes(req.body.time) > 960)
-            throw new Error("reservation should be from 8:00 till 16:00");
-        if (req.body.visitLength < 60)
-            throw new Error("can not have less than 1 hour in a visit");
-        if (req.body.visitLength > 240)
-            throw new Error("can not have more than 4 hours in a single visit");
-        if (!check_1.checkAvalibility(req.body.date, req.body.visitLength, req.body.time, req.body.team)) {
-            throw new Error("time conflict");
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, check_1.checkAvalibility(req.body.date, req.body.visitLength, req.body.time, req.body.team)];
+            case 1:
+                avalibility = _a.sent();
+                if (dates_1.givenTimeInMinutes(req.body.time) < 480 || dates_1.givenTimeInMinutes(req.body.time) > 960)
+                    throw new Error("reservation should be from 8:00 till 16:00");
+                if (req.body.visitLength < 60)
+                    throw new Error("can not have less than 1 hour in a visit");
+                if (req.body.visitLength > 240)
+                    throw new Error("can not have more than 4 hours in a single visit");
+                if (!avalibility) {
+                    throw new Error("time conflict");
+                }
+                order = new order_1.Order();
+                order.date = req.body.date;
+                order.team = req.body.team;
+                order.time = req.body.time;
+                order.visitLength = parseInt(req.body.visitLength);
+                order.status = orderStatus_1.EStatus.upcoming;
+                return [4 /*yield*/, order.save()];
+            case 2:
+                _a.sent();
+                res.send("saved");
+                return [2 /*return*/];
         }
-        order = new order_1.Order();
-        order.date = req.body.date;
-        order.team = req.body.team;
-        order.time = req.body.time;
-        order.visitLength = req.body.time;
-        order.status = orderStatus_1.EStatus.upcoming;
-        return [2 /*return*/];
     });
 }); });
 router.get('/avalibleTechnicians', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        if (dates_1.givenTimeInMinutes(req.body.time) < 480 || dates_1.givenTimeInMinutes(req.body.time) > 960)
-            throw new Error("reservation should be from 8:00 till 16:00");
-        if (req.body.visitLength < 60)
-            throw new Error("can not have less than 1 hour in a visit");
-        if (req.body.visitLength > 240)
-            throw new Error("can not have more than 4 hours in a single visit");
-        if (!check_1.checkAvalibility(req.body.date, req.body.visitLength, req.body.time, req.body.team)) {
-            throw new Error("time conflict");
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                if (dates_1.givenTimeInMinutes(req.body.time) < 480 || dates_1.givenTimeInMinutes(req.body.time) > 960)
+                    throw new Error("reservation should be from 8:00 till 16:00");
+                if (req.body.visitLength < 60)
+                    throw new Error("can not have less than 1 hour in a visit");
+                if (req.body.visitLength > 240)
+                    throw new Error("can not have more than 4 hours in a single visit");
+                _b = (_a = res).send;
+                return [4 /*yield*/, check_1.checkAvalibileTeams(req.body.date, req.body.visitLength, req.body.time)];
+            case 1:
+                _b.apply(_a, [_c.sent()]);
+                return [2 /*return*/, check_1.checkAvalibileTeams(req.body.date, req.body.visitLength, req.body.time)];
         }
-        return [2 /*return*/, check_1.checkAvalibileTeams(req.body.date, req.body.visitLength, req.body.time)];
     });
 }); });
 exports.default = router;

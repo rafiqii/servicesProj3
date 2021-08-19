@@ -55,7 +55,7 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     res.status(404).send("Username not found");
                     return [2 /*return*/];
                 }
-                return [4 /*yield*/, bcrypt_1.default.compare(req.body.password, logingUser.password)];
+                return [4 /*yield*/, bcrypt_1.default.compare(req.body.passWord, logingUser.passWord)];
             case 2:
                 if (_a.sent()) {
                     res.status(200).setHeader("x-auth", logingUser.generateToken()).send("Logged in");
